@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fizul Kharche - Mobile Expense Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            margin-right: 10px;
+            color: #FFD700;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .founder {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .app-container {
+            padding: 15px;
+        }
+
+        .card {
+            background: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #4b6cb7;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .card-title i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        input, select, button {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        input:focus, select:focus {
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 2px rgba(75, 108, 183, 0.2);
+        }
+
+        button {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .total-expense, .limit-info {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .total-expense {
+            color: #4b6cb7;
+        }
+
+        .limit-info {
+            color: #2c3e50;
+        }
+
+        .amount {
+            font-size: 20px;
+            margin-top: 5px;
+        }
+
+        .limit-exceeded {
+            color: #e74c3c;
+            background: #ffeded;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4b6cb7;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+
+        tr:hover {
+            background-color: #eef2ff;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .filter-section button {
+            background: #7f8c8d;
+        }
+
+        .reset-btn {
+            background: #e67e22;
+        }
+
+        .chart-container {
+            height: 150px;
+            margin-top: 15px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: #4b6cb7;
+            border-radius: 6px 6px 0 0;
+            position: relative;
+            min-height: 5px;
+            transition: height 0.5s;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        .chart-label {
+            position: absolute;
+            bottom: -22px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #f0f0f0;
+            color: #666;
+            font-size: 12px;
+        }
+
+        /* Mobile-specific styles */
+        .mobile-tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #4b6cb7;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            color: white;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 15px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Swipeable tabs */
+        .tabs-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 0;
+            background: #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .tab {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 5px;
+            background: #ddd;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            background: #4b6cb7;
+            color: white;
+        }
+
+        @media (max-width: 480px) {
+            th, td {
+                padding: 8px 5px;
+                font-size: 12px;
+            }
+            
+            .card-title {
+                font-size: 15px;
+            }
+            
+            input, select, button {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            th, td {
+                padding: 6px 3px;
+                font-size: 11px;
+            }
+            
+            .delete-btn {
+                padding: 4px 6px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-money-bill-wave"></i>
+                <h1>Fizul Kharche</h1>
+            </div>
+            <p class="subtitle">Track your expenses on the go</p>
+            <div class="founder">Founder: Diwakar</div>
+        </header>
+
+        <div class="tabs-container">
+            <div class="tab active" data-tab="add">Add Expense</div>
+            <div class="tab" data-tab="limits">Set Limits</div>
+            <div class="tab" data-tab="history">History</div>
+            <div class="tab" data-tab="charts">Charts</div>
+        </div>
+
+        <div class="app-container">
+            <!-- Add Expense Tab -->
+            <div class="tab-content active" id="add-tab">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-plus-circle"></i> Add New Expense</h2>
+                    <div class="input-group">
+                        <input type="number" id="amount" placeholder="Enter amount" min="0" step="0.01">
+                        <input type="text" id="description" placeholder="Enter description">
+                        <button id="add-expense"><i class="fas fa-plus"></i> Add Expense</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-chart-line"></i> Expense Summary</h2>
+                    <div class="summary">
+                        <div class="total-expense">
+                            Total Expenses
+                            <div class="amount">?<span id="total-amount">0.00</span></div>
+                        </div>
+                        <div class="limit-info">
+                            Current Limit
+                            <div class="amount" id="limit-display">Not set</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Set Limits Tab -->
+            <div class="tab-content" id="limits-tab">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-cog"></i> Set Expense Limit</h2>
+                    <div class="input-group">
+                        <input type="number" id="limit-amount" placeholder="Enter limit amount" min="0" step="0.01">
+                        <select id="limit-type">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                        <button id="set-limit"><i class="fas fa-check"></i> Set Limit</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-filter"></i> Filter Expenses</h2>
+                    <div class="filter-section">
+                        <input type="date" id="filter-date">
+                        <button id="filter-btn"><i class="fas fa-filter"></i> Filter by Date</button>
+                        <button id="show-all"><i class="fas fa-eye"></i> Show All</button>
+                        <button id="reset-data" class="reset-btn"><i class="fas fa-trash"></i> Reset All Data</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div class="tab-content" id="history-tab">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-history"></i> Expense History</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expense-list">
+                                <!-- Expenses will be listed here -->
+                            </tbody>
+                        </table>
+                        <div class="empty-state" id="table-empty">
+                            <i class="fas fa-receipt"></i>
+                            <p>No expenses recorded yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Tab -->
+            <div class="tab-content" id="charts-tab">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-chart-bar"></i> Expense Chart</h2>
+                    <div class="chart-container" id="chart">
+                        <div class="empty-state" id="chart-empty">
+                            <i class="fas fa-chart-bar"></i>
+                            <p>Add expenses to see chart</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2023 Fizul Kharche - Founder: Diwakar</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const amountInput = document.getElementById('amount');
+            const descriptionInput = document.getElementById('description');
+            const addExpenseBtn = document.getElementById('add-expense');
+            const limitAmountInput = document.getElementById('limit-amount');
+            const limitTypeSelect = document.getElementById('limit-type');
+            const setLimitBtn = document.getElementById('set-limit');
+            const totalAmountElement = document.getElementById('total-amount');
+            const limitDisplayElement = document.getElementById('limit-display');
+            const expenseListElement = document.getElementById('expense-list');
+            const filterDateInput = document.getElementById('filter-date');
+            const filterBtn = document.getElementById('filter-btn');
+            const showAllBtn = document.getElementById('show-all');
+            const resetDataBtn = document.getElementById('reset-data');
+            const tableEmpty = document.getElementById('table-empty');
+            const chartEmpty = document.getElementById('chart-empty');
+            const chartContainer = document.getElementById('chart');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            // Initialize data
+            let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+            let limit = JSON.parse(localStorage.getItem('expenseLimit')) || { amount: 0, type: 'daily' };
+
+            // Display initial data
+            updateTotalAmount();
+            renderExpenses();
+            updateLimitDisplay();
+            renderChart();
+
+            // Tab switching functionality
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to current tab and content
+                    tab.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+
+            // Add Expense
+            addExpenseBtn.addEventListener('click', function() {
+                const amount = parseFloat(amountInput.value);
+                const description = descriptionInput.value.trim();
+                
+                if (isNaN(amount) || amount <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+                
+                if (description === '') {
+                    alert('Please enter a description');
+                    return;
+                }
+                
+                const newExpense = {
+                    id: Date.now(),
+                    amount: amount,
+                    description: description,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                expenses.push(newExpense);
+                saveExpenses();
+                renderExpenses();
+                updateTotalAmount();
+                checkLimit();
+                renderChart();
+                
+                // Clear inputs
+                amountInput.value = '';
+                descriptionInput.value = '';
+                
+                // Show success message
+                showNotification('Expense added successfully!');
+            });
+
+            // Set Limit
+            setLimitBtn.addEventListener('click', function() {
+                const limitAmount = parseFloat(limitAmountInput.value);
+                
+                if (isNaN(limitAmount) || limitAmount <= 0) {
+                    alert('Please enter a valid limit amount');
+                    return;
+                }
+                
+                limit = {
+                    amount: limitAmount,
+                    type: limitTypeSelect.value
+                };
+                
+                localStorage.setItem('expenseLimit', JSON.stringify(limit));
+                updateLimitDisplay();
+                checkLimit();
+                
+                // Clear input
+                limitAmountInput.value = '';
+                
+                // Show success message
+                showNotification('Limit set successfully!');
+            });
+
+            // Filter by Date
+            filterBtn.addEventListener('click', function() {
+                const filterDate = filterDateInput.value;
+                
+                if (!filterDate) {
+                    alert('Please select a date to filter');
+                    return;
+                }
+                
+                const filteredExpenses = expenses.filter(expense => expense.date === filterDate);
+                renderExpenses(filteredExpenses);
+            });
+
+            // Show All Expenses
+            showAllBtn.addEventListener('click', function() {
+                renderExpenses();
+                filterDateInput.value = '';
+            });
+
+            // Reset All Data
+            resetDataBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to reset all data? This cannot be undone.')) {
+                    expenses = [];
+                    limit = { amount: 0, type: 'daily' };
+                    localStorage.removeItem('expenses');
+                    localStorage.removeItem('expenseLimit');
+                    renderExpenses();
+                    updateTotalAmount();
+                    updateLimitDisplay();
+                    renderChart();
+                    alert('All data has been reset');
+                }
+            });
+
+            // Delete Expense
+            function deleteExpense(id) {
+                expenses = expenses.filter(expense => expense.id !== id);
+                saveExpenses();
+                renderExpenses();
+                updateTotalAmount();
+                checkLimit();
+                renderChart();
+                
+                // Show notification
+                showNotification('Expense deleted successfully!');
+            }
+
+            // Save expenses to localStorage
+            function saveExpenses() {
+                localStorage.setItem('expenses', JSON.stringify(expenses));
+            }
+
+            // Update total amount display
+            function updateTotalAmount() {
+                const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+                totalAmountElement.textContent = total.toFixed(2);
+            }
+
+            // Update limit display
+            function updateLimitDisplay() {
+                if (limit.amount > 0) {
+                    limitDisplayElement.textContent = `?${limit.amount.toFixed(2)} (${limit.type})`;
+                } else {
+                    limitDisplayElement.textContent = 'Not set';
+                }
+            }
+
+            // Check if limit is exceeded
+            function checkLimit() {
+                const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+                const totalElement = document.querySelector('.total-expense');
+                const limitElement = document.querySelector('.limit-info');
+                
+                if (limit.amount > 0 && total > limit.amount) {
+                    totalElement.classList.add('limit-exceeded');
+                    limitElement.classList.add('limit-exceeded');
+                    
+                    // Show warning notification
+                    showNotification('Warning: You have exceeded your expense limit!', 'warning');
+                } else {
+                    totalElement.classList.remove('limit-exceeded');
+                    limitElement.classList.remove('limit-exceeded');
+                }
+            }
+
+            // Render expenses list
+            function renderExpenses(expensesArray = expenses) {
+                expenseListElement.innerHTML = '';
+                
+                if (expensesArray.length === 0) {
+                    tableEmpty.style.display = 'block';
+                    return;
+                }
+                
+                tableEmpty.style.display = 'none';
+                
+                expensesArray.forEach(expense => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${expense.date}</td>
+                        <td>${expense.description}</td>
+                        <td>?${expense.amount.toFixed(2)}</td>
+                        <td>
+                            <button class="delete-btn" data-id="${expense.id}"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    
+                    expenseListElement.appendChild(row);
+                });
+                
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        deleteExpense(id);
+                    });
+                });
+            }
+
+            // Render chart
+            function renderChart() {
+                chartContainer.innerHTML = '';
+                
+                if (expenses.length === 0) {
+                    chartEmpty.style.display = 'block';
+                    return;
+                }
+                
+                chartEmpty.style.display = 'none';
+                
+                // Get last 7 days of expenses
+                const last7Days = [];
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    last7Days.push(date.toISOString().split('T')[0]);
+                }
+                
+                // Calculate daily totals
+                const dailyTotals = last7Days.map(date => {
+                    const dayExpenses = expenses.filter(expense => expense.date === date);
+                    return dayExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+                });
+                
+                // Find max value for scaling
+                const maxAmount = Math.max(...dailyTotals, 100);
+                
+                // Create chart bars
+                last7Days.forEach((date, index) => {
+                    const barHeight = dailyTotals[index] / maxAmount * 100;
+                    const bar = document.createElement('div');
+                    bar.className = 'chart-bar';
+                    bar.style.height = `${barHeight}%`;
+                    bar.title = `?${dailyTotals[index].toFixed(2)}`;
+                    
+                    const label = document.createElement('div');
+                    label.className = 'chart-label';
+                    label.textContent = date.substring(5); // Show only MM-DD
+                    
+                    bar.appendChild(label);
+                    chartContainer.appendChild(bar);
+                });
+            }
+
+            // Show notification
+            function showNotification(message, type = 'success') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.position = 'fixed';
+                notification.style.bottom = '20px';
+                notification.style.left = '50%';
+                notification.style.transform = 'translateX(-50%)';
+                notification.style.padding = '12px 20px';
+                notification.style.borderRadius = '8px';
+                notification.style.color = 'white';
+                notification.style.fontWeight = '600';
+                notification.style.zIndex = '1000';
+                notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                
+                if (type === 'success') {
+                    notification.style.background = '#2ecc71';
+                } else if (type === 'warning') {
+                    notification.style.background = '#e74c3c';
+                }
+                
+                // Add to document
+                document.body.appendChild(notification);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 500);
+                }, 3000);
+            }
+
+            // Touch events for mobile swipe
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            document.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Swipe left
+                    switchToNextTab();
+                }
+                
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // Swipe right
+                    switchToPrevTab();
+                }
+            }
+            
+            function switchToNextTab() {
+                const activeTab = document.querySelector('.tab.active');
+                const nextTab = activeTab.nextElementSibling;
+                
+                if (nextTab && nextTab.classList.contains('tab')) {
+                    nextTab.click();
+                }
+            }
+            
+            function switchToPrevTab() {
+                const activeTab = document.querySelector('.tab.active');
+                const prevTab = activeTab.previousElementSibling;
+                
+                if (prevTab && prevTab.classList.contains('tab')) {
+                    prevTab.click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
